@@ -1,11 +1,17 @@
 from botocore.vendored import requests
 import json
-import csv
+import datetime
+from datetime import timedelta
 import zlib
 import boto3
 
 def lambda_handler(event, context):
-    url = 'http://files.tmdb.org/p/exports/movie_ids_07_21_2018.json.gz'
+    date = str(datetime.date.today()-timedelta(2))
+    year,month,day = date.split('-')
+    present_date = month+"_"+day+"_"+year
+    #print(present_date)
+    url = 'http://files.tmdb.org/p/exports/movie_ids_'+present_date+'.json.gz'
+    #print(url)
     page = requests.get(url)
     decompressed_data=zlib.decompress(page.content, 16+zlib.MAX_WBITS) 
     #print(decompressed_data)
