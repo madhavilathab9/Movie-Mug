@@ -1,0 +1,26 @@
+import json
+import boto3
+
+def lambda_handler(event, context):
+    
+    #print(decompressed_data)
+    s3 = boto3.client('s3')
+    #s3.Bucket('movie360').put_object(Key='Movie_ids.csv', Body=decompressed_data)
+    obj = s3.get_object(Bucket = 'movie360', Key = 'Movie_ids.csv')
+    rows = obj['Body'].read().decode('utf-8').split('\n')
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('MovieMug-Ids')
+    for i in range(0,1000):
+        #print(rows[i])
+        print("i is :",i)
+        result = rows[i].split(',')
+        #print(result)
+        id = result[1].split(':')
+        #print(id[1])
+        id = int(id[1])
+        print(id)
+        table.put_item(
+            Item={
+                'ID':id
+            })
+    return 'Hello from Lambda'
