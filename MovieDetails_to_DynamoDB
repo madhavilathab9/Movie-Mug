@@ -1,0 +1,46 @@
+import json
+import boto3
+from botocore.vendored import requests
+import pprint
+
+def lambda_handler(event, context):
+    
+    api_key = '6bc0269392b9e98263e0d772ec7806c2&language=en-US'
+    id_num = 27030
+    id = str(id_num)
+    url = "https://api.themoviedb.org/3/movie/"+id+"?api_key="+api_key
+    page = requests.get(url)
+    response = page.content
+    data = json.loads(response)
+    pprint.pprint(data)
+    
+    dynamodb = boto3.resource("dynamodb")
+    table = dynamodb.Table("MovieMug-Movie-Details")
+    #genrelen = len(data['genres']))
+    #print("XXXXXXXXXXXXX",data['genres'][0]['id'])
+    table.put_item(
+        Item = {
+            'id' : id_num,
+            'adult' : data['adult'],
+            'backdrop_path' : data['backdrop_path'],
+            'belongs_to_collection' : data['belongs_to_collection'],
+            'budget' : data['budget'],
+            'geners' : {
+                'genre1':{
+                    'id' : data['genres'][0]['id'],
+                    'name' : data['genres'][0]['name'],
+                    },
+                'genre2':{
+                    'id' : data['genres'][1]['id'],
+                    'name' : data['genres'][1]['name'],
+                    },
+                },
+            'homepage' : data['homepage'],
+            'imdb_id' : data['imdb_id'],
+            'original_language' : data['original_language'],
+            'original_title' : data['original_title'],
+            'overview' : data['overview'],
+        }
+    )
+    
+    return 'Hello from Lambda'
