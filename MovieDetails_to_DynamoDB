@@ -5,7 +5,7 @@ import pprint
 
 def lambda_handler(event, context):
     
-    api_key = '6bc0269392b9e98263e0d772ec7806c2&language=en-US'
+    api_key = XXXXXXXXXXXXXX
     id_num = 27030
     id = str(id_num)
     url = "https://api.themoviedb.org/3/movie/"+id+"?api_key="+api_key
@@ -16,8 +16,6 @@ def lambda_handler(event, context):
     
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.Table("MovieMug-Movie-Details")
-    #genrelen = len(data['genres']))
-    #print("XXXXXXXXXXXXX",data['genres'][0]['id'])
     table.put_item(
         Item = {
             'id' : id_num,
