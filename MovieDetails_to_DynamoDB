@@ -2,10 +2,11 @@ import json
 import boto3
 from botocore.vendored import requests
 import pprint
+import decimal
 
 def lambda_handler(event, context):
     
-    api_key = XXXXXXXXXXXXXX
+    api_key = 'XXXXXXXXXXXXXXXXXXXXXXX'
     id_num = 27030
     id = str(id_num)
     url = "https://api.themoviedb.org/3/movie/"+id+"?api_key="+api_key
@@ -16,6 +17,8 @@ def lambda_handler(event, context):
     
     dynamodb = boto3.resource("dynamodb")
     table = dynamodb.Table("MovieMug-Movie-Details")
+    #genrelen = len(data['genres']))
+    #print("XXXXXXXXXXXXX",data['production_companies'][0]['id'])
     table.put_item(
         Item = {
             'id' : id_num,
@@ -38,6 +41,34 @@ def lambda_handler(event, context):
             'original_language' : data['original_language'],
             'original_title' : data['original_title'],
             'overview' : data['overview'],
+            'popularity' : int(data['popularity']),
+            'poster_path' : data['poster_path'],
+            'production_companies' : {
+                'company1' : {
+                    'id' : data['production_companies'][0]['id'],
+                    'logo_path' : data['production_companies'][0]['logo_path'],
+                    'name' : data['production_companies'][0]['name'],
+                },
+            'production_countries' : {
+                'iso_3166_1' : data['production_countries'][0]['iso_3166_1'],
+                'name' : data['production_countries'][0]['name']
+            },
+            'release_date' : data['release_date'],
+            'revenue' : data['production_countries'],
+            'runtime' : data['runtime'],
+            'spoken_languages' : {
+                'iso_639_1' : data['spoken_languages'][0]['iso_639_1'],
+                'name' : data['spoken_languages'][0]['name'],
+                },
+            'status' : data['status'],
+            'tagline' : data['tagline'],
+            'title' : data['title'],
+            'video' : data['video'],
+            'vote_average' : int(data['vote_average']),
+            'vote_count' : data['vote_count']
+            
+            }
+            
         }
     )
     
